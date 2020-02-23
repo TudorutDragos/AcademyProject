@@ -1,39 +1,41 @@
 CREATE DATABASE Football;
 
 CREATE TABLE [League](
-	[LeagueName] nvarchar(50) NOT NULL,
-CONSTRAINT [PK_League] PRIMARY KEY ([LeagueName]));
+	[League_ID] uniqueidentifier NOT NULL,
+CONSTRAINT [PK_League] PRIMARY KEY ([League_ID]));
 
 
 CREATE TABLE [Team](
-	[TeamName] nvarchar(50) NOT NULL,
-	[InLeague] nvarchar(50) NOT NULL,
-CONSTRAINT [PK_Team] PRIMARY KEY ([TeamName]),
-CONSTRAINT [FK_Team_League] FOREIGN KEY ([InLeague])
-		REFERENCES [League]([LeagueName]));
+	[Team_ID] uniqueidentifier NOT NULL,
+	[League] uniqueidentifier NOT NULL,
+CONSTRAINT [PK_Team] PRIMARY KEY (Team_ID),
+CONSTRAINT [FK_Team_League] FOREIGN KEY ([League])
+		REFERENCES [League]([League_ID]));
 
 CREATE TABLE [Footballer](
-	[FootballerID] uniqueidentifier NOT NULL,
-	[FirstName] nvarchar(50) NOT NULL,
-	[LastName] nvarchar(50) NOT NULL,
-	[Age] int NOT NULL,
+	[Footballer_ID] uniqueidentifier NOT NULL,
+	[First_Name] nvarchar(50) NOT NULL,
+	[Last_Name] nvarchar(50) NOT NULL,
+	[Birth_Day] date NOT NULL,
 	[Nationality] nvarchar(50) NOT NULL,
-	[InTeam] nvarchar(50) NOT NULL,
-CONSTRAINT [PK_Footballer] PRIMARY KEY ([FootballerID]),
-CONSTRAINT [FK_Footballer_Team] FOREIGN KEY ([InTeam])
-		REFERENCES [Team]([TeamName]));
+	[Team] uniqueidentifier NOT NULL,
+CONSTRAINT [PK_Footballer] PRIMARY KEY ([Footballer_ID]),
+CONSTRAINT [FK_Footballer_Team] FOREIGN KEY ([Team])
+		REFERENCES [Team]([Team_ID]));
 
 CREATE TABLE [Clasament](
-	[ClasamentID] uniqueidentifier NOT NULL,
-	[LeagueName] nvarchar(50) NOT NULL,
+	[Clasament_ID] uniqueidentifier NOT NULL,
+	[League] uniqueidentifier NOT NULL,
 	[Position] int NOT NULL,
-	[TeamName] nvarchar(50) NOT NULL,
-	[TeamWins] int,
-	[TeamDefeats] int,
-	[TeamDraws] int,
-	[TeamPoints] int,
-CONSTRAINT [PK_Clasament] PRIMARY KEY ([ClasamentID]),
-CONSTRAINT [FK_Clasament_League] FOREIGN KEY ([LeagueName])
-		REFERENCES [League]([LeagueName]));
+	[Team] uniqueidentifier NOT NULL,
+	[Team_Wins] int,
+	[Team_Defeats] int,
+	[Team_Draws] int,
+	[Team_Points] int,
+CONSTRAINT [PK_Clasament] PRIMARY KEY ([Clasament_ID]),
+CONSTRAINT [FK_Clasament_League] FOREIGN KEY ([League])
+		REFERENCES [League]([League_ID]),
+CONSTRAINT [FK_Clasament_Team] FOREIGN KEY ([Team])
+		REFERENCES [Team]([Team_ID]));
 
 

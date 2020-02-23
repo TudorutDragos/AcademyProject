@@ -1,0 +1,3 @@
+Ceea ce incerc sa fac aici e un site pe care sa se poata urmarii meciurile si pozitile in diferite clasamente ale echipelor de fotbal.
+Pe langa asta incerc sa fac in asa fel incat sa se poata urmarii si transferurile jucatorilor intre echipe.
+Momentan m-am gandit doar la aceste 4 tabele, dar o sa fie nevoie sa mai adaug cateva
