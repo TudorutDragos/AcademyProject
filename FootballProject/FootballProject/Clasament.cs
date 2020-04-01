@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FootballProject
 {
-    class Clasament
+    public class Clasament
     {
         public Guid clasamentId { get; set; }
         public Guid league { get; set; }
@@ -16,6 +16,11 @@ namespace FootballProject
         public int teamDefeats { get; set; }
         public int teamDraws { get; set; }
         public int teamPoints { get; set; }
+
+        public Clasament()
+        {
+
+        }
 
     }
 }

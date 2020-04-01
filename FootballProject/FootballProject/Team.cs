@@ -6,9 +6,15 @@ using System.Threading.Tasks;
 
 namespace FootballProject
 {
-    class Team
+    public class Team
     {
-        public Guid teamId { get; set; }
+        public Guid ID { get; set; }
+        public string Name { get; set; }
         public Guid league { get; set; }
+
+        public Team()
+        {
+
+        }
     }
 }
