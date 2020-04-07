@@ -9,14 +9,20 @@ namespace DataAccessLayer
 {
     public class ClasamentDAL
     {
-        private const string _connectionString = "Server=desktop-491CMSI;Database=Football;Trusted_Connection=True;";
+        private string _connectionString;
         private const string CLASAMENT_READ_BY_GUID = "dbo.Clasament_ReadById";
         private const string CLASAMENT_DELETE_BY_GUID = "dbo.Clasament_DeleteById";
         private const string CLASAMENT_UPDATE_BY_GUID = "dbo.Clasament_UpdateById";
+        private const string CLASAMENT_READ_ALL= "dbo.Clasament_ReadAll";
+
+        public ClasamentDAL(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         public List<Clasament> ReadAll()
         {
-            List<Clasament> clasments = new List<Clasament>();
+            List<Clasament> clasaments = new List<Clasament>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -25,25 +31,25 @@ namespace DataAccessLayer
                 {
                     command.Connection = connection;
                     command.CommandType = System.Data.CommandType.Text;
-                    command.CommandText = "SELECT * FROM dbo.Clasament";
+                    command.CommandText = CLASAMENT_READ_ALL;
                     using (SqlDataReader dataReader = command.ExecuteReader())
                     {
                         while (dataReader.Read())
                         {
                             Clasament clasament = new Clasament();
-                            clasament = getValues(dataReader);
-                            clasments.Add(clasment);
+                            clasament = ConvertToModel(dataReader);
+                            clasaments.Add(clasament);
                         }
                     }
                 }
             }
 
-            return clasments;
+            return clasaments;
         }
 
-        public Clasament ReadByUid(Guid clasamentUid)
+        public Clasament ReadByUid(Clasament clasament)
         {
-            Clasament clasament = new Clasament();
+            Clasament newClasament = new Clasament();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -53,21 +59,21 @@ namespace DataAccessLayer
                     command.Connection = connection;
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.CommandText = CLASAMENT_READ_BY_GUID;
-                    command.Parameters.Add(new SqlParameter("@Clasament_ID", clasamentUid));
+                    command.Parameters.Add(new SqlParameter("@Clasament_ID", clasament.clasamentId));
                     using (SqlDataReader dataReader = command.ExecuteReader())
                     {
                         if (dataReader.Read())
                         {
-                            clasament = getValues(dataReader);
+                            newClasament = ConvertToModel(dataReader);
                         }
                     }
                 }
             }
 
-            return clasament;
+            return newClasament;
         }
 
-        public void DeleteByUid(Guid clasamentUid)
+        public void DeleteByUid(Clasament clasament)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -76,7 +82,7 @@ namespace DataAccessLayer
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Connection = connection;
-                    command.Parameters.Add(new SqlParameter("@Clasament_ID", clasamentUid));
+                    command.Parameters.Add(new SqlParameter("@Clasament_ID", clasament.clasamentId));
                     command.CommandText = CLASAMENT_DELETE_BY_GUID;
 
                     command.ExecuteNonQuery();
@@ -84,7 +90,7 @@ namespace DataAccessLayer
             }
         }
 
-        public void UpdateByUid(Guid clasamentUid, int position,int teamWins,int teamDefeats,int teamDraws,int teamPoints)
+        public void UpdateByUid(Clasament clasament)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -93,12 +99,12 @@ namespace DataAccessLayer
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Connection = connection;
-                    command.Parameters.Add(new SqlParameter("@ID", clasamentUid));
-                    command.Parameters.Add(new SqlParameter("@Position", position));
-                    command.Parameters.Add(new SqlParameter("@Team_Wins", teamWins));
-                    command.Parameters.Add(new SqlParameter("@Team_Defeats", teamDefeats));
-                    command.Parameters.Add(new SqlParameter("@Team_Draws", teamDraws));
-                    command.Parameters.Add(new SqlParameter("@Team_Points", teamPoints));
+                    command.Parameters.Add(new SqlParameter("@ID", clasament.clasamentId));
+                    command.Parameters.Add(new SqlParameter("@Position", clasament.position));
+                    command.Parameters.Add(new SqlParameter("@Team_Wins", clasament.teamWins));
+                    command.Parameters.Add(new SqlParameter("@Team_Defeats", clasament.teamDefeats));
+                    command.Parameters.Add(new SqlParameter("@Team_Draws", clasament.teamDraws));
+                    command.Parameters.Add(new SqlParameter("@Team_Points", clasament.teamPoints));
                     command.CommandText = CLASAMENT_UPDATE_BY_GUID;
 
                     command.ExecuteNonQuery();
@@ -106,7 +112,7 @@ namespace DataAccessLayer
             }
         }
 
-        private Clasament getValues(SqlDataReader dataReader)
+        private Clasament ConvertToModel(SqlDataReader dataReader)
         {
             Clasament clasament = new Clasament();
             clasament.clasamentId = dataReader.GetGuid(dataReader.GetOrdinal("Clasament_ID"));
@@ -120,5 +126,4 @@ namespace DataAccessLayer
             return clasament;
         }
     }
-}
 }

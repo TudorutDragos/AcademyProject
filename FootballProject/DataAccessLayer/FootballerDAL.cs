@@ -10,10 +10,16 @@ namespace DataAccessLayer
 {
     public class FootballerDAL
     {
-        private const string _connectionString = "Server=desktop-491CMSI;Database=Football;Trusted_Connection=True;";
+        private string _connectionString;
         private const string FOOTBALLER_READ_BY_GUID = "dbo.Footballer_ReadById";
         private const string FOOTBALLER_DELETE_BY_GUID = "dbo.Footballer_DeleteById";
         private const string FOOTBALLER_UPDATE_BY_GUID = "dbo.Footballer_UpdateById";
+        private const string FOOTBALLER_READ_ALL = "dbo.Footballer_ReadAll";
+
+        public FootballerDAL(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         public List<Footballer> ReadAll()
         {
@@ -26,13 +32,13 @@ namespace DataAccessLayer
                 {
                     command.Connection = connection;
                     command.CommandType = System.Data.CommandType.Text;
-                    command.CommandText = "SELECT * FROM dbo.Footballer";
+                    command.CommandText = FOOTBALLER_READ_ALL;
                     using (SqlDataReader dataReader = command.ExecuteReader())
                     {
                         while (dataReader.Read())
                         {
                             Footballer footballer = new Footballer();
-                            footballer = getValues(dataReader);
+                            footballer = ConvertToModel(dataReader);
                             footballers.Add(footballer);
                         }
                     }
@@ -42,9 +48,9 @@ namespace DataAccessLayer
             return footballers;
         }
 
-        public Footballer ReadByUid(Guid footballerUid)
+        public Footballer ReadByUid(Footballer footballer)
         {
-            Footballer footballer = new Footballer();
+            Footballer newFootballer = new Footballer();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -54,21 +60,21 @@ namespace DataAccessLayer
                     command.Connection = connection;
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.CommandText = FOOTBALLER_READ_BY_GUID;
-                    command.Parameters.Add(new SqlParameter("@Footballer_ID", footballerUid));
+                    command.Parameters.Add(new SqlParameter("@Footballer_ID", footballer.ID));
                     using (SqlDataReader dataReader = command.ExecuteReader())
                     {
                         if (dataReader.Read())
                         {
-                            footballer = getValues(dataReader);
+                            newFootballer = ConvertToModel(dataReader);
                         }
                     }
                 }
             }
 
-            return footballer;
+            return newFootballer;
         }
 
-        public void DeleteByUid(Guid footballerUid)
+        public void DeleteByUid(Footballer footballer)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -77,7 +83,7 @@ namespace DataAccessLayer
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Connection = connection;
-                    command.Parameters.Add(new SqlParameter("@Footballer_ID", footballerUid));
+                    command.Parameters.Add(new SqlParameter("@Footballer_ID", footballer.ID));
                     command.CommandText = FOOTBALLER_DELETE_BY_GUID;
 
                     command.ExecuteNonQuery();
@@ -85,7 +91,7 @@ namespace DataAccessLayer
             }
         }
 
-        public void UpdateByUid(Guid footballerUid, string first_name, string last_name, Guid team)
+        public void UpdateByUid(Footballer footballer)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -94,10 +100,10 @@ namespace DataAccessLayer
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Connection = connection;
-                    command.Parameters.Add(new SqlParameter("@ID", footballerUid));
-                    command.Parameters.Add(new SqlParameter("@First_name", first_name));
-                    command.Parameters.Add(new SqlParameter("@Last_name", last_name));
-                    command.Parameters.Add(new SqlParameter("@Team", team));
+                    command.Parameters.Add(new SqlParameter("@ID", footballer.ID));
+                    command.Parameters.Add(new SqlParameter("@First_name", footballer.firstName));
+                    command.Parameters.Add(new SqlParameter("@Last_name", footballer.lastName));
+                    command.Parameters.Add(new SqlParameter("@Team", footballer.team));
                     command.CommandText = FOOTBALLER_UPDATE_BY_GUID;
 
                     command.ExecuteNonQuery();
@@ -105,7 +111,7 @@ namespace DataAccessLayer
             }
         }
 
-        private Footballer getValues(SqlDataReader dataReader)
+        private Footballer ConvertToModel(SqlDataReader dataReader)
         {
             Footballer footballer = new Footballer();
             footballer.ID = dataReader.GetGuid(dataReader.GetOrdinal("Footballer_ID"));

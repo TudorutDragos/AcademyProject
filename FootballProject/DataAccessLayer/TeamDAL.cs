@@ -10,10 +10,16 @@ namespace DataAccessLayer
 {
     public class TeamDAL
     {
-        private const string _connectionString = "Server=desktop-491CMSI;Database=Football;Trusted_Connection=True;";
+        private string _connectionString;
         private const string TEAM_READ_BY_GUID = "dbo.Team_ReadById";
         private const string TEAM_DELETE_BY_GUID = "dbo.Team_DeleteById";
         private const string TEAM_UPDATE_BY_GUID = "dbo.Team_UpdateById";
+        private const string TEAM_READ_ALL= "dbo.Team_ReadAll";
+
+        public TeamDAL(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         public List<Team> ReadAll()
         {
@@ -26,13 +32,13 @@ namespace DataAccessLayer
                 {
                     command.Connection = connection;
                     command.CommandType = System.Data.CommandType.Text;
-                    command.CommandText = "SELECT * FROM dbo.Team";
+                    command.CommandText = TEAM_READ_ALL;
                     using (SqlDataReader dataReader = command.ExecuteReader())
                     {
                         while (dataReader.Read())
                         {
                             Team team = new Team();
-                            team = getValues(dataReader);
+                            team = ConvertToModel(dataReader);
                             teams.Add(team);
                         }
                     }
@@ -42,9 +48,9 @@ namespace DataAccessLayer
             return teams;
         }
 
-        public Team ReadByUid(Guid teamUid)
+        public Team ReadByUid(Team team)
         {
-            Team team = new Team();
+            Team newTeam = new Team();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -54,21 +60,21 @@ namespace DataAccessLayer
                     command.Connection = connection;
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.CommandText = TEAM_READ_BY_GUID;
-                    command.Parameters.Add(new SqlParameter("@Team_ID", teamUid));
+                    command.Parameters.Add(new SqlParameter("@Team_ID", team.ID));
                     using (SqlDataReader dataReader = command.ExecuteReader())
                     {
                         if (dataReader.Read())
                         {
-                            team = getValues(dataReader);
+                            newTeam = ConvertToModel(dataReader);
                         }
                     }
                 }
             }
 
-            return team;
+            return newTeam;
         }
 
-        public void DeleteByUid(Guid teamUid)
+        public void DeleteByUid(Team team)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -77,7 +83,7 @@ namespace DataAccessLayer
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Connection = connection;
-                    command.Parameters.Add(new SqlParameter("@Team_ID", teamUid));
+                    command.Parameters.Add(new SqlParameter("@Team_ID", team.ID));
                     command.CommandText = TEAM_DELETE_BY_GUID;
 
                     command.ExecuteNonQuery();
@@ -85,7 +91,7 @@ namespace DataAccessLayer
             }
         }
 
-        public void UpdateByUid(Guid teamUid, string name)
+        public void UpdateByUid(Team team)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -94,8 +100,8 @@ namespace DataAccessLayer
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Connection = connection;
-                    command.Parameters.Add(new SqlParameter("@ID", teamUid));
-                    command.Parameters.Add(new SqlParameter("@Name", name));
+                    command.Parameters.Add(new SqlParameter("@ID", team.ID));
+                    command.Parameters.Add(new SqlParameter("@Name", team.Name));
                     command.CommandText = TEAM_UPDATE_BY_GUID;
 
                     command.ExecuteNonQuery();
@@ -103,7 +109,7 @@ namespace DataAccessLayer
             }
         }
 
-        private Team getValues(SqlDataReader dataReader)
+        private Team ConvertToModel(SqlDataReader dataReader)
         {
             Team team = new Team();
             team.ID = dataReader.GetGuid(dataReader.GetOrdinal("Team_ID"));

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootballProject", "Football
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{D5191CCB-CF15-45C6-8327-94CDE7366B78}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusniessLayer", "BusniessLayer\BusniessLayer.csproj", "{72982552-DE05-44A5-A471-4122D06B049D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{D5191CCB-CF15-45C6-8327-94CDE7366B78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5191CCB-CF15-45C6-8327-94CDE7366B78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5191CCB-CF15-45C6-8327-94CDE7366B78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72982552-DE05-44A5-A471-4122D06B049D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72982552-DE05-44A5-A471-4122D06B049D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72982552-DE05-44A5-A471-4122D06B049D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72982552-DE05-44A5-A471-4122D06B049D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

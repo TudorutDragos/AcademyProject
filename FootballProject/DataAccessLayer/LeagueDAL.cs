@@ -9,10 +9,16 @@ namespace DataAccessLayer
 {
     public class LeagueDAL
     {
-        private const string _connectionString = "Server=desktop-491CMSI;Database=Football;Trusted_Connection=True;";
+        private string _connectionString;
         private const string LEAGUE_READ_BY_GUID = "dbo.League_ReadById";
         private const string LEAGUE_DELETE_BY_GUID = "dbo.League_DeleteById";
         private const string LEAGUE_UPDATE_BY_GUID = "dbo.League_UpdateById";
+        private const string LEAGUE_READ_ALL = "dbo.League_ReadAll";
+
+        public LeagueDAL(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         public List<League> ReadAll()
         {
@@ -25,13 +31,13 @@ namespace DataAccessLayer
                 {
                     command.Connection = connection;
                     command.CommandType = System.Data.CommandType.Text;
-                    command.CommandText = "SELECT * FROM dbo.League";
+                    command.CommandText = LEAGUE_READ_ALL;
                     using (SqlDataReader dataReader = command.ExecuteReader())
                     {
                         while (dataReader.Read())
                         {
                             League league = new League();
-                            league = getValues(dataReader);
+                            league = ConverToModel(dataReader);
                             leagues.Add(league);
                         }
                     }
@@ -41,9 +47,9 @@ namespace DataAccessLayer
             return leagues;
         }
 
-        public League ReadByUid(Guid leagueUid)
+        public League ReadByUid(League league)
         {
-            League league = new League();
+            League newLeague = new League();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -53,21 +59,21 @@ namespace DataAccessLayer
                     command.Connection = connection;
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.CommandText = LEAGUE_READ_BY_GUID;
-                    command.Parameters.Add(new SqlParameter("@League_ID", leagueUid));
+                    command.Parameters.Add(new SqlParameter("@League_ID", league.leagueId));
                     using (SqlDataReader dataReader = command.ExecuteReader())
                     {
                         if (dataReader.Read())
                         {
-                            league = getValues(dataReader);
+                            newLeague = ConverToModel(dataReader);
                         }
                     }
                 }
             }
 
-            return league;
+            return newLeague;
         }
 
-        public void DeleteByUid(Guid leagueUid)
+        public void DeleteByUid(League league)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -76,7 +82,7 @@ namespace DataAccessLayer
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Connection = connection;
-                    command.Parameters.Add(new SqlParameter("@League_ID", leagueUid));
+                    command.Parameters.Add(new SqlParameter("@League_ID", league.leagueId));
                     command.CommandText = LEAGUE_DELETE_BY_GUID;
 
                     command.ExecuteNonQuery();
@@ -84,7 +90,7 @@ namespace DataAccessLayer
             }
         }
 
-        public void UpdateByUid(Guid leagueUid, string name)
+        public void UpdateByUid(League league)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -93,8 +99,8 @@ namespace DataAccessLayer
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Connection = connection;
-                    command.Parameters.Add(new SqlParameter("@ID", leagueUid));
-                    command.Parameters.Add(new SqlParameter("@Name", name));
+                    command.Parameters.Add(new SqlParameter("@ID", league.leagueId));
+                    command.Parameters.Add(new SqlParameter("@Name", league.name));
                     command.CommandText = LEAGUE_UPDATE_BY_GUID;
 
                     command.ExecuteNonQuery();
@@ -102,11 +108,11 @@ namespace DataAccessLayer
             }
         }
 
-        private League getValues(SqlDataReader dataReader)
+        private League ConverToModel(SqlDataReader dataReader)
         {
             League league = new League();
             league.leagueId = dataReader.GetGuid(dataReader.GetOrdinal("League_ID"));
-            league.name = dataReader.GetString(dataReader.GetOrdinal("Name"));
+            league.name  = dataReader.GetString(dataReader.GetOrdinal("Name"));
 
             return league;
         }
