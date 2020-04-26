@@ -1,0 +1,43 @@
+body{
+    background-image: url("/Images/background.jpg");
+    background-size: 100% 100%;
+    background-attachment: fixed;
+}
+h1{
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.forms{
+    margin: 10px;
+    padding: 10px;
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#divider{
+    margin: auto;
+    width: 37%;
+}
+
+span{
+    background-color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
+    margin-right:15px;
+}
+
+.formTitle{
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 25px;
+}
+
+.inputForms{
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+#submitButton{
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
