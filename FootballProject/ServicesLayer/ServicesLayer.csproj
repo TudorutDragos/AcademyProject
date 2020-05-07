@@ -112,6 +112,10 @@
       <Project>{72982552-de05-44a5-a471-4122d06b049d}</Project>
       <Name>BusniessLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
+      <Project>{d5191ccb-cf15-45c6-8327-94cde7366b78}</Project>
+      <Name>DataAccessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FootballProject\FootballProject.csproj">
       <Project>{c34b6138-fed2-441b-8239-da48c39e6f48}</Project>
       <Name>FootballProject</Name>

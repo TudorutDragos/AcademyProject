@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using FootballerProject;
+using FootballProject;
 using BusniessLayer;
 
 namespace ServicesLayer.Controllers
@@ -15,7 +15,7 @@ namespace ServicesLayer.Controllers
 
         public List<Team> GetAll()
         {
-            return _blContext.FootballerBL.ReadAll();
+            return _blContext.TeamBL.ReadAll();
         }
 
         public Team GetByUid(Team team)
