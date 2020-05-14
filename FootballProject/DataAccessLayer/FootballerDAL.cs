@@ -15,6 +15,7 @@ namespace DataAccessLayer
         private const string FOOTBALLER_DELETE_BY_GUID = "dbo.Footballer_DeleteById";
         private const string FOOTBALLER_UPDATE_BY_GUID = "dbo.Footballer_UpdateById";
         private const string FOOTBALLER_READ_ALL = "dbo.Footballer_ReadAll";
+        private const string FOOTBALLER_INSERT = "dbo.Footballer_Insert";
 
         public FootballerDAL(string connectionString)
         {
@@ -83,7 +84,7 @@ namespace DataAccessLayer
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Connection = connection;
-                    command.Parameters.Add(new SqlParameter("@Footballer_ID", footballer.ID));
+                    command.Parameters.Add(new SqlParameter("@ID", footballer.ID));
                     command.CommandText = FOOTBALLER_DELETE_BY_GUID;
 
                     command.ExecuteNonQuery();
@@ -105,6 +106,28 @@ namespace DataAccessLayer
                     command.Parameters.Add(new SqlParameter("@Last_name", footballer.lastName));
                     command.Parameters.Add(new SqlParameter("@Team", footballer.team));
                     command.CommandText = FOOTBALLER_UPDATE_BY_GUID;
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void Insert(Footballer footballer)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Connection = connection;
+                    command.Parameters.Add(new SqlParameter("@FootballerID", footballer.ID));
+                    command.Parameters.Add(new SqlParameter("@FirstName", footballer.firstName));
+                    command.Parameters.Add(new SqlParameter("@LastName", footballer.lastName));
+                    command.Parameters.Add(new SqlParameter("@BirthDay", footballer.birthDay));
+                    command.Parameters.Add(new SqlParameter("@Nationality", footballer.nationality));
+                    command.Parameters.Add(new SqlParameter("@Team", footballer.team));
+                    command.CommandText = FOOTBALLER_INSERT;
 
                     command.ExecuteNonQuery();
                 }

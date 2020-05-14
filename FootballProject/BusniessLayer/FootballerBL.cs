@@ -27,6 +27,11 @@ namespace BusniessLayer
             return _footballerDAL.ReadByUid(footballer);
         }
 
+        public void Insert(Footballer footballer)
+        {
+            _footballerDAL.Insert(footballer);
+        }
+
         public void DeleteByUid(Footballer footballer)
         {
             _footballerDAL.DeleteByUid(footballer);

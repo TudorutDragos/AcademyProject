@@ -10,7 +10,7 @@ using System.Web.Http.Cors;
 
 namespace ServicesLayer.Controllers
 {
-    [EnableCors(origins: '*', header: '*', methods : '*')]
+    [EnableCors(origins: "*", headers: "*", methods : "*")]
     public class FootballerController : ApiController
     {
         private BLContext _blContext = new BLContext();
@@ -25,6 +25,12 @@ namespace ServicesLayer.Controllers
         public Footballer GetByUid(Footballer footballer)
         {
             return _blContext.FootballerBL.ReadByUid(footballer);
+        }
+
+        [HttpPost]
+        public void Insert(Footballer footballer)
+        {
+            _blContext.FootballerBL.Insert(footballer);
         }
 
         [HttpPost]

@@ -4,31 +4,19 @@ window.onload = function(){
 
 function registerPageEvents(){
     $('#footballer').on('click', function(){
-        loadFootballerPage();
+        redirectPage("http://localhost:5500/footballerPage.html");
     });
     $('#team').on('click', function(){
-        loadTeamPage();
+        redirectPage("http://localhost:5500/teamPage.html");
     });
     $('#league').on('click', function(){
-        loadLeaguePage();
+        redirectPage("http://localhost:5500/leaguePage.html");
     });
     $('#clasament').on('click', function(){
-        loadClasamentPage();
+        redirectPage("http://localhost:5500/clasamentPage.html");
     });
 }
 
-function loadFootballerPage(){
-    window.location.href="http://localhost:5500/footballerPage.html"
-}
-
-function loadTeamPage(){
-    window.location.href="http://localhost:5500/teamPage.html"
-}
-
-function loadLeaguePage(){
-    window.location.href="http://localhost:5500/leaguePage.html"
-}
-
-function loadClasamentPage(){
-    window.location.href="http://localhost:5500/clasamentPage.html"
+function redirectPage(htmlPage){
+    window.location.href=htmlPage;
 }
